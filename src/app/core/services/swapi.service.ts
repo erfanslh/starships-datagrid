@@ -7,7 +7,9 @@ import { Starship, SwapiPage } from '../models/starship.model';
 @Injectable({ providedIn: 'root' })
 export class SwapiService {
   private http = inject(HttpClient);
-  // due to ssl certificate in swapi.dev i used an alternative apiUrl
+
+  // due to ssl certificate in swapi.dev i've used an official mirror instead
+  // to use swapi.dev just replace this in baseUrl 'https://swapi.dev/api'
   private baseUrl = 'https://swapi.py4e.com/api';
 
   private cache = new Map<number, Starship[]>();
