@@ -112,7 +112,7 @@ export class StarshipGridComponent {
   }
 
   // sorting logic
-  applySort(rows: any[], sortModel: { colId: string; sort: string }[]): any[] {
+  private applySort(rows: any[], sortModel: { colId: string; sort: string }[]): any[] {
     if (sortModel.length === 0) return rows;
     const { colId, sort } = sortModel[0];
 
@@ -174,7 +174,7 @@ export class StarshipGridComponent {
     });
   }
 
-  loadData() {
+  private loadData() {
     this.error = '';
     this.gridApi.setGridOption('datasource', {
       getRows: (params: IGetRowsParams) => {

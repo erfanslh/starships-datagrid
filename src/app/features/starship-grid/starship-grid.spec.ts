@@ -4,6 +4,9 @@ import { vi } from 'vitest';
 import { StarshipGridComponent } from './starship-grid';
 import { SwapiService } from './../../core/services/swapi.service';
 import { Starship } from '../../core/models/starship.model';
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 describe('StarshipGridComponent', () => {
   let component: StarshipGridComponent;
@@ -85,7 +88,7 @@ describe('StarshipGridComponent', () => {
       { cost_in_credits: '500', name: 'E' },
     ];
 
-    const sorted = component.applySort(rows, [{ colId: 'cost_in_credits', sort: 'asc' }]);
+    const sorted = (component as any).applySort(rows, [{ colId: 'cost_in_credits', sort: 'asc' }]);
 
     expect(sorted[0].name).toBe('E');
     expect(sorted[1].name).toBe('B');
