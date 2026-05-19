@@ -15,7 +15,6 @@ import {
 } from 'ag-grid-community';
 import { SwapiService } from './../../core/services/swapi.service';
 
-
 ModuleRegistry.registerModules([
   InfiniteRowModelModule,
   ClientSideRowModelModule,
@@ -38,37 +37,66 @@ export class StarshipGridComponent {
 
   reachedEnd = false;
   loading = true;
-  theme = themeQuartz;
+  theme = themeQuartz.withParams({
+    fontFamily: 'Inter, sans-serif',
+    fontSize: 14,
+    dataFontSize: 14,
+    headerFontSize: 12,
+    headerFontWeight: 500,
+    headerTextColor: '#60646c',
+    foregroundColor: '#1c2024',
+    borderColor: '#e0e1e6',
+    headerBackgroundColor: '#ffffff',
+    backgroundColor: '#ffffff',
+    rowHoverColor: '#00005506',
+    selectedRowBackgroundColor: '#00005506',
+    rowHeight: 36,
+    headerHeight: 32,
+    cellHorizontalPaddingScale: 0.8,
+    columnBorder: { style: 'solid', width: 1, color: '#e0e1e6' },
+    headerColumnBorder: { style: 'solid', width: 1, color: '#e0e1e6' },
+    pinnedColumnBorder: false
+  });
   searchTerm = '';
   totalRows = 0;
   error = '';
 
   colDefs: ColDef[] = [
     {
-      headerName: '#',
+      headerName: '',
       valueGetter: 'node.rowIndex + 1',
-      width: 60,
+      width: 54,
       resizable: false,
       sortable: false,
       pinned: 'left',
+      suppressMovable: true,
+      cellStyle: {
+        color: '#60646c',
+        fontSize: '12px',
+        fontWeight: '400',
+        textAlign: 'right',
+        paddingRight: '16px',
+        paddingLeft: '6px',
+      },
+      headerClass: 'no-border-header',
     },
-    { field: 'name', headerName: 'Name', minWidth: 180, resizable: true },
-    { field: 'model', headerName: 'Model', minWidth: 200, resizable: true },
-    { field: 'manufacturer', headerName: 'Manufacturer', minWidth: 220, resizable: true },
+    { field: 'name', headerName: 'Name', minWidth: 150, resizable: true },
+    { field: 'model', headerName: 'Model', minWidth: 150, resizable: true },
+    { field: 'manufacturer', headerName: 'Manufacturer', minWidth: 150, resizable: true },
     { field: 'starship_class', headerName: 'Class', minWidth: 150, resizable: true },
     { field: 'cost_in_credits', headerName: 'Cost (credits)', minWidth: 150, resizable: true },
-    { field: 'length', headerName: 'Length (m)', minWidth: 130, resizable: true },
-    { field: 'crew', headerName: 'Crew', minWidth: 100, resizable: true },
-    { field: 'passengers', headerName: 'Passengers', minWidth: 120, resizable: true },
-    { field: 'max_atmosphering_speed', headerName: 'Max Speed', minWidth: 130, resizable: true },
+    { field: 'length', headerName: 'Length (m)', minWidth: 150, resizable: true },
+    { field: 'crew', headerName: 'Crew', minWidth: 150, resizable: true },
+    { field: 'passengers', headerName: 'Passengers', minWidth: 150, resizable: true },
+    { field: 'max_atmosphering_speed', headerName: 'Max Speed', minWidth: 150, resizable: true },
     { field: 'hyperdrive_rating', headerName: 'Hyperdrive Rating', minWidth: 150, resizable: true },
-    { field: 'MGLT', headerName: 'MGLT', minWidth: 100, resizable: true },
+    { field: 'MGLT', headerName: 'MGLT', minWidth: 150, resizable: true },
     { field: 'cargo_capacity', headerName: 'Cargo Capacity', minWidth: 150, resizable: true },
-    { field: 'consumables', headerName: 'Consumables', minWidth: 150, resizable: true },
+    { field: 'consumables', headerName: 'Consumables', minWidth:150 , resizable: true },
     {
       field: 'notes',
       headerName: 'Notes',
-      minWidth: 200,
+      minWidth: 150,
       resizable: true,
       editable: true,
       cellStyle: { backgroundColor: '#fefce8' },
