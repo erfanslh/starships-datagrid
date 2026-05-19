@@ -5,23 +5,9 @@ import {
   GridApi,
   GridReadyEvent,
   IGetRowsParams,
-  ModuleRegistry,
-  InfiniteRowModelModule,
-  ClientSideRowModelModule,
-  ValidationModule,
-  TextEditorModule,
-  CellStyleModule,
   themeQuartz,
 } from 'ag-grid-community';
 import { SwapiService } from './../../core/services/swapi.service';
-
-ModuleRegistry.registerModules([
-  InfiniteRowModelModule,
-  ClientSideRowModelModule,
-  ValidationModule,
-  TextEditorModule,
-  CellStyleModule,
-]);
 
 @Component({
   selector: 'app-starship-grid',
