@@ -1,12 +1,6 @@
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import {
-  ColDef,
-  GridApi,
-  GridReadyEvent,
-  IGetRowsParams,
-  themeQuartz,
-} from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, IGetRowsParams, themeQuartz } from 'ag-grid-community';
 import { SwapiService } from './../../core/services/swapi.service';
 
 @Component({
@@ -41,7 +35,7 @@ export class StarshipGridComponent {
     cellHorizontalPaddingScale: 0.8,
     columnBorder: { style: 'solid', width: 1, color: '#e0e1e6' },
     headerColumnBorder: { style: 'solid', width: 1, color: '#e0e1e6' },
-    pinnedColumnBorder: false
+    pinnedColumnBorder: false,
   });
   searchTerm = '';
   totalRows = 0;
@@ -78,7 +72,7 @@ export class StarshipGridComponent {
     { field: 'hyperdrive_rating', headerName: 'Hyperdrive Rating', minWidth: 150, resizable: true },
     { field: 'MGLT', headerName: 'MGLT', minWidth: 150, resizable: true },
     { field: 'cargo_capacity', headerName: 'Cargo Capacity', minWidth: 150, resizable: true },
-    { field: 'consumables', headerName: 'Consumables', minWidth:150 , resizable: true },
+    { field: 'consumables', headerName: 'Consumables', minWidth: 150, resizable: true },
     {
       field: 'notes',
       headerName: 'Notes',
@@ -153,9 +147,11 @@ export class StarshipGridComponent {
   private handlePageRows(params: IGetRowsParams, page: number) {
     this.swapiService.getPage(page).subscribe({
       next: (_rows) => {
-        this.loading = false;
-        this.cdr.detectChanges();
-        this.totalRows = this.swapiService.totalCount;
+        setTimeout(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+          this.totalRows = this.swapiService.totalCount;
+        });
 
         if (params.sortModel.length > 0) {
           const sorted = this.applySort(this.swapiService.getCached(), params.sortModel);
