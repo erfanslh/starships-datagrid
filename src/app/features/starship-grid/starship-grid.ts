@@ -1,8 +1,9 @@
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { GridApi, GridReadyEvent, IGetRowsParams, themeQuartz } from 'ag-grid-community';
+import { GridApi, GridReadyEvent, IGetRowsParams } from 'ag-grid-community';
 import { SwapiService } from './../../core/services/swapi.service';
 import { STARSHIP_COLUMN_DEFS, STARSHIP_DEFAULT_COL_DEF} from '../config/column-defs';
+import { STARSHIP_GRID_THEME } from '../config/grid-theme';
 
 @Component({
   selector: 'app-starship-grid',
@@ -18,30 +19,11 @@ export class StarshipGridComponent {
 
   reachedEnd = false;
   loading = true;
-  theme = themeQuartz.withParams({
-    fontFamily: 'Inter, sans-serif',
-    fontSize: 14,
-    dataFontSize: 14,
-    headerFontSize: 12,
-    headerFontWeight: 500,
-    headerTextColor: '#60646c',
-    foregroundColor: '#1c2024',
-    borderColor: '#e0e1e6',
-    headerBackgroundColor: '#ffffff',
-    backgroundColor: '#ffffff',
-    rowHoverColor: '#00005506',
-    selectedRowBackgroundColor: '#00005506',
-    rowHeight: 36,
-    headerHeight: 32,
-    cellHorizontalPaddingScale: 0.8,
-    columnBorder: { style: 'solid', width: 1, color: '#e0e1e6' },
-    headerColumnBorder: { style: 'solid', width: 1, color: '#e0e1e6' },
-    pinnedColumnBorder: false,
-  });
+
   searchTerm = '';
   totalRows = 0;
   error = '';
-
+  theme = STARSHIP_GRID_THEME;
   colDefs = STARSHIP_COLUMN_DEFS;
   defaultColDef = STARSHIP_DEFAULT_COL_DEF;
 
