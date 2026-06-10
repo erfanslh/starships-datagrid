@@ -5,11 +5,12 @@ import { SwapiService } from './../../core/services/swapi.service';
 import { STARSHIP_COLUMN_DEFS, STARSHIP_DEFAULT_COL_DEF} from '../config/column-defs';
 import { STARSHIP_GRID_THEME } from '../config/grid-theme';
 import { applySort } from '../utilities/sort.utilities';
+import { SearchBarComponent } from '../components/search-bar/search-bar';
 
 @Component({
   selector: 'app-starship-grid',
   standalone: true,
-  imports: [AgGridAngular],
+  imports: [AgGridAngular, SearchBarComponent],
   templateUrl: './starship-grid.html',
   styleUrl: './starship-grid.css',
 })

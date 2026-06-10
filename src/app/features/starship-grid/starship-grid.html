@@ -2,12 +2,7 @@
 
   <div class="toolbar">
     <h1>Star Wars Fleet</h1>
-    <input
-      type="text"
-      name="search"
-      placeholder="Search starships..."
-      (input)="onSearch($any($event.target).value)"
-    />
+    <app-search-bar (searchChange)="onSearch($event)"></app-search-bar>
     <div class="toolbar-divider"></div>
     <span class="row-count">
       @if (totalRows > 0) {
