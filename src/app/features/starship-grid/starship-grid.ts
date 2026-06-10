@@ -4,7 +4,7 @@ import { GridApi, GridReadyEvent, IGetRowsParams } from 'ag-grid-community';
 import { SwapiService } from './../../core/services/swapi.service';
 import { STARSHIP_COLUMN_DEFS, STARSHIP_DEFAULT_COL_DEF} from '../config/column-defs';
 import { STARSHIP_GRID_THEME } from '../config/grid-theme';
-import { applySort } from '../utilities/sort.utilities';
+import { applySort } from '../utils/sort.utils';
 import { SearchBarComponent } from '../components/search-bar/search-bar';
 
 @Component({
