@@ -6,11 +6,12 @@ import { STARSHIP_COLUMN_DEFS, STARSHIP_DEFAULT_COL_DEF} from './config/column-d
 import { STARSHIP_GRID_THEME } from './config/grid-theme';
 import { applySort } from './utils/sort.utils';
 import { SearchBarComponent } from './components/search-bar/search-bar';
+import { ErrorBannerComponent } from './components/error-banner/error-banner';
 
 @Component({
   selector: 'app-starship-grid',
   standalone: true,
-  imports: [AgGridAngular, SearchBarComponent],
+  imports: [AgGridAngular, SearchBarComponent, ErrorBannerComponent],
   templateUrl: './starship-grid.html',
   styleUrl: './starship-grid.css',
 })

@@ -12,10 +12,7 @@
   </div>
 
   @if (error) {
-    <div class="error-banner">
-      <span> {{ error }}</span>
-      <button (click)="retry()">Retry</button>
-    </div>
+      <app-error-banner [message]="error" (retry)="retry()"></app-error-banner>
   }
 
   <div style="flex: 1; min-height: 0; position: relative;">
