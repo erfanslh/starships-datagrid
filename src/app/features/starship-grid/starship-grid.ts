@@ -7,11 +7,13 @@ import { STARSHIP_GRID_THEME } from './config/grid-theme';
 import { applySort } from './utils/sort.utils';
 import { SearchBarComponent } from './components/search-bar/search-bar';
 import { ErrorBannerComponent } from './components/error-banner/error-banner';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-starship-grid',
   standalone: true,
-  imports: [AgGridAngular, SearchBarComponent, ErrorBannerComponent],
+  imports: [AgGridAngular, SearchBarComponent, ErrorBannerComponent,
+    LoadingSpinnerComponent],
   templateUrl: './starship-grid.html',
   styleUrl: './starship-grid.css',
 })
