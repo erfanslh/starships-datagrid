@@ -37,9 +37,7 @@
     </div>
 
     @if (!loading && searchTerm && totalRows === 0) {
-      <div class="empty-state">
-        <p>No starships found for "<strong>{{ searchTerm }}</strong>"</p>
-      </div>
+      <app-empty-state [searchTerm]="searchTerm"></app-empty-state>
     }
 
   </div>

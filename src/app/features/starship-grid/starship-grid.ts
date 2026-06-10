@@ -8,12 +8,13 @@ import { applySort } from './utils/sort.utils';
 import { SearchBarComponent } from './components/search-bar/search-bar';
 import { ErrorBannerComponent } from './components/error-banner/error-banner';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner';
+import { EmptyStateComponent } from './components/empty-state/empty-state';
 
 @Component({
   selector: 'app-starship-grid',
   standalone: true,
   imports: [AgGridAngular, SearchBarComponent, ErrorBannerComponent,
-    LoadingSpinnerComponent],
+    LoadingSpinnerComponent, EmptyStateComponent],
   templateUrl: './starship-grid.html',
   styleUrl: './starship-grid.css',
 })
