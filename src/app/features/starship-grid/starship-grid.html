@@ -1,4 +1,4 @@
-<div style="display: flex; flex-direction: column; height: 100vh">
+<div class="grid-container">
 
   <div class="toolbar">
     <h1>Star Wars Fleet</h1>
@@ -15,14 +15,13 @@
       <app-error-banner [message]="error" (retry)="retry()"></app-error-banner>
   }
 
-  <div style="flex: 1; min-height: 0; position: relative;">
+  <div class="grid-body">
 
     @if (loading) {
         <app-loading-spinner message="Loading starships..."></app-loading-spinner>
     }
 
-    <div style="width: 100%; height: 100%; overflow-x: auto;"
-         [style.visibility]="loading ? 'hidden' : 'visible'">
+    <div class="grid-scroll" [style.visibility]="loading ? 'hidden' : 'visible'">
       <ag-grid-angular
         style="width: 100%; height: 100%"
         [theme]="theme"
