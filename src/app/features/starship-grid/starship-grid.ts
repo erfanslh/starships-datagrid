@@ -4,6 +4,7 @@ import { GridApi, GridReadyEvent, IGetRowsParams } from 'ag-grid-community';
 import { SwapiService } from './../../core/services/swapi.service';
 import { STARSHIP_COLUMN_DEFS, STARSHIP_DEFAULT_COL_DEF} from '../config/column-defs';
 import { STARSHIP_GRID_THEME } from '../config/grid-theme';
+import { applySort } from '../utilities/sort.utilities';
 
 @Component({
   selector: 'app-starship-grid',
@@ -43,31 +44,6 @@ export class StarshipGridComponent {
     }
   }
 
-  // sorting logic
-  private applySort(rows: any[], sortModel: { colId: string; sort: string }[]): any[] {
-    if (sortModel.length === 0) return rows;
-    const { colId, sort } = sortModel[0];
-
-    return [...rows].sort((a, b) => {
-      const valA = a[colId];
-      const valB = b[colId];
-
-      const isUnknownA = !valA || valA === 'unknown' || valA === 'n/a' || valA === '';
-      const isUnknownB = !valB || valB === 'unknown' || valB === 'n/a' || valB === '';
-      if (isUnknownA && isUnknownB) return 0;
-      if (isUnknownA) return 1;
-      if (isUnknownB) return -1;
-
-      const numA = parseFloat(String(valA).replace(/,/g, ''));
-      const numB = parseFloat(String(valB).replace(/,/g, ''));
-      const isNumeric = !isNaN(numA) && !isNaN(numB);
-
-      if (isNumeric) return sort === 'asc' ? numA - numB : numB - numA;
-      return sort === 'asc'
-        ? String(valA).localeCompare(String(valB))
-        : String(valB).localeCompare(String(valA));
-    });
-  }
 
   // handle rows while searching
   private handleSearchRows(params: IGetRowsParams) {
@@ -75,7 +51,7 @@ export class StarshipGridComponent {
     const filtered = cached.filter((r) =>
       r.name.toLowerCase().includes(this.searchTerm.toLowerCase()),
     );
-    const sorted = this.applySort(filtered, params.sortModel);
+    const sorted = applySort(filtered, params.sortModel);
     const pageRows = sorted.slice(params.startRow, params.startRow + 10);
     this.totalRows = filtered.length;
     params.successCallback(pageRows, filtered.length);
@@ -92,7 +68,7 @@ export class StarshipGridComponent {
         });
 
         if (params.sortModel.length > 0) {
-          const sorted = this.applySort(this.swapiService.getCached(), params.sortModel);
+          const sorted = applySort(this.swapiService.getCached(), params.sortModel);
           const pageRows = sorted.slice(params.startRow, params.startRow + 10);
           const isLastPage = params.startRow + pageRows.length >= this.swapiService.totalCount;
           params.successCallback(pageRows, isLastPage ? this.swapiService.totalCount : -1);
