@@ -68,8 +68,8 @@ export class StarshipGridComponent {
       next: (_rows) => {
         setTimeout(() => {
           this.loading = false;
-          this.cdr.detectChanges();
           this.totalRows = this.swapiService.totalCount;
+          this.cdr.detectChanges();
         });
 
         if (params.sortModel.length > 0) {
@@ -83,7 +83,9 @@ export class StarshipGridComponent {
         }
       },
       error: () => {
-        this.error = 'Failed to load starships.';
+        this.loading = false;
+        this.error = 'Failed to load starships. please try again.';
+        this.cdr.detectChanges();
         params.failCallback();
       },
     });
