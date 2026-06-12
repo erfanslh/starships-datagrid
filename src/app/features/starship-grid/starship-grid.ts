@@ -9,6 +9,9 @@ import { SearchBarComponent } from './components/search-bar/search-bar';
 import { ErrorBannerComponent } from './components/error-banner/error-banner';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner';
 import { EmptyStateComponent } from './components/empty-state/empty-state';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -22,6 +25,7 @@ import { EmptyStateComponent } from './components/empty-state/empty-state';
 export class StarshipGridComponent {
   private swapiService = inject(SwapiService);
   private gridApi!: GridApi;
+  private searchInput$ = new Subject<string>();
 
   reachedEnd = signal(false);
   loading = signal(true);
@@ -32,6 +36,19 @@ export class StarshipGridComponent {
   theme = STARSHIP_GRID_THEME;
   colDefs = STARSHIP_COLUMN_DEFS;
   defaultColDef = STARSHIP_DEFAULT_COL_DEF;
+
+  constructor() {
+    this.searchInput$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntilDestroyed(),
+    ).subscribe((term) => {
+      this.searchTerm.set(term);
+      this.reachedEnd.set(false);
+      this.gridApi.purgeInfiniteCache();
+    }
+    )
+  }
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
@@ -101,9 +118,7 @@ export class StarshipGridComponent {
   }
 
   onSearch(term: string) {
-    this.searchTerm.set(term);
-    this.reachedEnd.set(false);
-    this.gridApi.purgeInfiniteCache();
+    this.searchInput$.next(term);
   }
 
   retry() {
