@@ -100,12 +100,15 @@ describe('StarshipGridComponent', () => {
   });
 
   it('should clear search term and reset reachedEnd on new search', () => {
+    vi.useFakeTimers();
     (component as any).gridApi = { purgeInfiniteCache: vi.fn() };
 
     component.reachedEnd.set(true);
     component.onSearch('');
+    vi.advanceTimersByTime(300);
 
     expect(component.searchTerm()).toBe('');
     expect(component.reachedEnd()).toBe(false);
+    vi.useRealTimers();
   });
 });
