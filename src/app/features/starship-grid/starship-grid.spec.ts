@@ -5,7 +5,7 @@ import { StarshipGridComponent } from './starship-grid';
 import { SwapiService } from './../../core/services/swapi.service';
 import { Starship } from '../../core/models/starship.model';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
-import { applySort } from '../utilities/sort.utilities';
+import { applySort } from './utils/sort.utils';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -71,7 +71,7 @@ describe('StarshipGridComponent', () => {
   });
 
   it('should filter cached starships by name when searching', () => {
-    component.searchTerm = 'falcon';
+    component.searchTerm.set('falcon');
 
     const cached = swapiServiceMock.getCached!();
     const filtered = cached.filter((r: Starship) => r.name.toLowerCase().includes('falcon'));
@@ -102,10 +102,10 @@ describe('StarshipGridComponent', () => {
   it('should clear search term and reset reachedEnd on new search', () => {
     (component as any).gridApi = { purgeInfiniteCache: vi.fn() };
 
-    component.reachedEnd = true;
+    component.reachedEnd.set(true);
     component.onSearch('');
 
-    expect(component.searchTerm).toBe('');
-    expect(component.reachedEnd).toBe(false);
+    expect(component.searchTerm()).toBe('');
+    expect(component.reachedEnd()).toBe(false);
   });
 });

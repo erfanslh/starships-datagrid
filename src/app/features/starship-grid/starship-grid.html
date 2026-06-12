@@ -5,23 +5,23 @@
     <app-search-bar (searchChange)="onSearch($event)"></app-search-bar>
     <div class="toolbar-divider"></div>
     <span class="row-count">
-      @if (totalRows > 0) {
-        {{ totalRows }} {{ searchTerm ? 'results' : 'starships' }}
+      @if (totalRows() > 0) {
+        {{ totalRows() }} {{ searchTerm() ? 'results' : 'starships' }}
       }
     </span>
   </div>
 
-  @if (error) {
-      <app-error-banner [message]="error" (retry)="retry()"></app-error-banner>
+  @if (error()) {
+      <app-error-banner [message]="error()" (retry)="retry()"></app-error-banner>
   }
 
   <div class="grid-body">
 
-    @if (loading) {
+    @if (loading()) {
         <app-loading-spinner message="Loading starships..."></app-loading-spinner>
     }
 
-    <div class="grid-scroll" [style.visibility]="loading ? 'hidden' : 'visible'">
+    <div class="grid-scroll" [style.visibility]="loading() ? 'hidden' : 'visible'">
       <ag-grid-angular
         style="width: 100%; height: 100%"
         [theme]="theme"
@@ -35,15 +35,15 @@
       />
     </div>
 
-    @if (!loading && searchTerm && totalRows === 0) {
-      <app-empty-state [searchTerm]="searchTerm"></app-empty-state>
+    @if (!loading() && searchTerm() && totalRows() === 0) {
+      <app-empty-state [searchTerm]="searchTerm()"></app-empty-state>
     }
 
   </div>
 
-  @if (reachedEnd && !searchTerm) {
+  @if (reachedEnd() && !searchTerm()) {
     <div class="end-of-results">
-      All {{ totalRows }} starships loaded
+      All {{ totalRows() }} starships loaded
     </div>
   }
 

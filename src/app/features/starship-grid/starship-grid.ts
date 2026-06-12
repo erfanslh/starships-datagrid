@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridApi, GridReadyEvent, IGetRowsParams } from 'ag-grid-community';
 import { SwapiService } from './../../core/services/swapi.service';
@@ -9,6 +9,7 @@ import { SearchBarComponent } from './components/search-bar/search-bar';
 import { ErrorBannerComponent } from './components/error-banner/error-banner';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner';
 import { EmptyStateComponent } from './components/empty-state/empty-state';
+
 
 @Component({
   selector: 'app-starship-grid',
@@ -21,14 +22,13 @@ import { EmptyStateComponent } from './components/empty-state/empty-state';
 export class StarshipGridComponent {
   private swapiService = inject(SwapiService);
   private gridApi!: GridApi;
-  private cdr = inject(ChangeDetectorRef);
 
-  reachedEnd = false;
-  loading = true;
+  reachedEnd = signal(false);
+  loading = signal(true);
 
-  searchTerm = '';
-  totalRows = 0;
-  error = '';
+  searchTerm = signal('');
+  totalRows = signal(0);
+  error = signal('');
   theme = STARSHIP_GRID_THEME;
   colDefs = STARSHIP_COLUMN_DEFS;
   defaultColDef = STARSHIP_DEFAULT_COL_DEF;
@@ -40,12 +40,11 @@ export class StarshipGridComponent {
   }
 
   onModelUpdated() {
-    if (!this.gridApi || this.loading) return;
+    if (!this.gridApi || this.loading()) return;
     const loadedRows = this.swapiService.getCached().length;
     const total = this.swapiService.totalCount;
     if (total > 0 && loadedRows >= total) {
-      this.reachedEnd = true;
-      this.cdr.detectChanges();
+      this.reachedEnd.set(true);
     }
   }
 
@@ -54,11 +53,11 @@ export class StarshipGridComponent {
   private handleSearchRows(params: IGetRowsParams) {
     const cached = this.swapiService.getCached();
     const filtered = cached.filter((r) =>
-      r.name.toLowerCase().includes(this.searchTerm.toLowerCase()),
+      r.name.toLowerCase().includes(this.searchTerm().toLowerCase()),
     );
     const sorted = applySort(filtered, params.sortModel);
     const pageRows = sorted.slice(params.startRow, params.startRow + 10);
-    this.totalRows = filtered.length;
+    this.totalRows.set(filtered.length);
     params.successCallback(pageRows, filtered.length);
   }
 
@@ -66,11 +65,8 @@ export class StarshipGridComponent {
   private handlePageRows(params: IGetRowsParams, page: number) {
     this.swapiService.getPage(page).subscribe({
       next: (_rows) => {
-        setTimeout(() => {
-          this.loading = false;
-          this.totalRows = this.swapiService.totalCount;
-          this.cdr.detectChanges();
-        });
+          this.loading.set(false);
+          this.totalRows.set(this.swapiService.totalCount);
 
         if (params.sortModel.length > 0) {
           const sorted = applySort(this.swapiService.getCached(), params.sortModel);
@@ -83,20 +79,19 @@ export class StarshipGridComponent {
         }
       },
       error: () => {
-        this.loading = false;
-        this.error = 'Failed to load starships. please try again.';
-        this.cdr.detectChanges();
+        this.loading.set(false);
+        this.error.set('Failed to load starships. please try again.');
         params.failCallback();
       },
     });
   }
 
   private loadData() {
-    this.error = '';
+    this.error.set('');
     this.gridApi.setGridOption('datasource', {
       getRows: (params: IGetRowsParams) => {
         const page = Math.floor(params.startRow / 10) + 1;
-        if (this.searchTerm) {
+        if (this.searchTerm()) {
           this.handleSearchRows(params);
         } else {
           this.handlePageRows(params, page);
@@ -106,13 +101,13 @@ export class StarshipGridComponent {
   }
 
   onSearch(term: string) {
-    this.searchTerm = term;
-    this.reachedEnd = false;
+    this.searchTerm.set(term);
+    this.reachedEnd.set(false);
     this.gridApi.purgeInfiniteCache();
   }
 
   retry() {
-    this.error = '';
+    this.error.set('');
     this.loadData();
   }
 }
