@@ -31,6 +31,24 @@ Migrating back to `swapi.dev` requires changing a single line in `SwapiService`:
 private baseUrl = 'https://swapi.dev/api';
 ```
 
+## Architecture
+
+```
+src/app/
+├── core/
+│   ├── models/        
+│   └── services/     
+└── features/
+    └── starship-grid/
+        ├── config/        
+        ├── utils/        
+        └── components/    
+```
+
+The app follows a smart/dumb component pattern and is organized into two layers. `core` holds shared infrastructure — `models` defines the data interfaces, and `services` contains the `SwapiService` that wraps API access and caches pages. `features` holds the UI features; the `starship-grid` is split by responsibility: `config` holds static configuration (column definitions, theme), `utils` holds pure helper functions (sorting), and `components` holds the presentational child components.
+
+`StarshipGridComponent` is the smart component — it contains the business logic and coordinates the dumb child components, which communicate via `@Input` and `@Output`. State is managed with Angular signals.
+
 ## Infinite Scroll
 
 AG Grid's `InfiniteRowModelModule` is used with a custom datasource. The datasource converts AG Grid's row index into a SWAPI page number:
@@ -45,10 +63,26 @@ Each page is fetched from the API only when the user scrolls to it. Once fetched
 
 **No loader while scrolling** is achieved by two mechanisms:
 
-- The loading spinner is only shown once — during the very first data fetch on app start. After that, `loading` is never set to `true` again.
+- The loading spinner is only shown once — during the very first data fetch on app start. After that, it stays off during scrolling.
 - `rowBuffer` is set to `0` which prevents AG Grid from pre-fetching the next page before the user actually scrolls there.
 
 New rows appear seamlessly as the user scrolls — no spinner, no skeleton, no "loading more" indicator.
+
+## Search
+ 
+A search input filters starships by name. The input is **debounced** (300 ms) using RxJS — the filter runs only after the user stops typing, avoiding a cache purge and re-render on every keystroke.
+ 
+Search filters across pages **already loaded** into the cache. As the user scrolls and more pages load, the searchable set grows. This is a deliberate trade-off — see Limitations.
+
+## Sorting
+ 
+A custom sort comparator (`utils/sort.utils.ts`) handles three behaviors AG Grid's default sort does not:
+ 
+- **Unknown values go to the bottom**, regardless of sort direction. SWAPI returns `'unknown'` or `'n/a'` for missing fields.
+- **Numeric detection with comma stripping** — values like `'47,060'` are compared as numbers, not strings.
+- **String fallback** uses `localeCompare` for proper alphabetical sorting.
+
+Sorting runs across all cached pages combined, so the order is globally correct.
 
 ## Editable Column
 
@@ -76,9 +110,9 @@ All columns except the row number column support resizing and column reordering.
 
 ## Trade-offs and Limitations
 
-**Search only works on cached pages.** The search input filters starships by name across pages already loaded. If the user searches before scrolling through all pages, results from unloaded pages will not appear. This is a deliberate trade-off — fetching all pages on every keystroke would cause unnecessary API calls.
-
-**Sorting re-sorts all cached pages combined.** When a sort is active, all cached pages are sorted together to ensure correct global order. Sort order may shift slightly as new pages load.
+**Search and sort are client-side.** They operate on already-cached pages because SWAPI exposes no search or sort parameters. In a production backend, both would be pushed server-side so the API returns pre-filtered, pre-sorted, paginated results.
+ 
+**Search only covers cached pages.** If the user searches before scrolling through all pages, results from unloaded pages will not appear. Pre-fetching all pages on every keystroke would cause unnecessary API calls.
 
 **The Consumables column sorts as text.** SWAPI returns this field as a free-text duration (e.g. "1 year", "2 months"). Proper duration-based sorting would require a separate numeric field from the API.
 
@@ -86,6 +120,7 @@ All columns except the row number column support resizing and column reordering.
 
 ## Future Improvements
 
+- **Server-side search and sort** once a backend supporting those parameters is available.
 - **Column visibility toggle** — allow users to show/hide columns based on their preference.
 - **Export to CSV** — let users download the current grid data as a CSV file.
 - **Multi-column sorting** — extend sorting to support multiple columns simultaneously.
